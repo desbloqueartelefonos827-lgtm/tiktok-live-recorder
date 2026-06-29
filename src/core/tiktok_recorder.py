@@ -8,7 +8,6 @@ from requests import RequestException
 from core.tiktok_api import TikTokAPI
 from utils.logger_manager import logger
 from utils.recorder_config import RecorderConfig
-from utils.video_management import VideoManagement
 from utils.custom_exceptions import LiveNotFound, UserLiveError, TikTokRecorderError
 from utils.enums import Mode, Error, TimeOut, TikTokError
 
@@ -175,7 +174,7 @@ class TikTokRecorder:
 
     def _build_output_path(self, user: str) -> str:
         filename = (
-            f"TK_{user}_{time.strftime('%Y.%m.%d_%H-%M-%S', time.localtime())}_flv.mp4"
+            f"TK_{user}_{time.strftime('%Y.%m.%d_%H-%M-%S', time.localtime())}.ts"
         )
         if self.output:
             return str(Path(self.output) / filename)
@@ -247,7 +246,6 @@ class TikTokRecorder:
                     out_file.flush()
 
         logger.info(f"Recording finished: {Path(output).resolve()}\n")
-        VideoManagement.convert_flv_to_mp4(output, self.bitrate)
 
     def check_country_blacklisted(self):
         is_blacklisted = self.tiktok.is_country_blacklisted()
